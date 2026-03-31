@@ -289,6 +289,8 @@ local Templates = {
         Position = UDim2.fromOffset(6, 6),
         Size = UDim2.fromOffset(720, 600),
         IconSize = UDim2.fromOffset(30, 30),
+        IconCorner = false,
+        IconCornerRadius = 8,
         AutoShow = true,
         Center = true,
         Resizable = true,
@@ -6228,11 +6230,12 @@ function Library:CreateWindow(WindowInfo)
     Library.OriginalMinSize =
         Vector2.new(math.min(Library.OriginalMinSize.X, MaxX), math.min(Library.OriginalMinSize.Y, MaxY))
     Library.MinSize = Library.OriginalMinSize
-
+    --// tamanho maximo
     WindowInfo.Size = UDim2.fromOffset(
-        math.clamp(WindowInfo.Size.X.Offset, Library.MinSize.X, MaxX),
-        math.clamp(WindowInfo.Size.Y.Offset, Library.MinSize.Y, MaxY)
+        math.max(WindowInfo.Size.X.Offset, Library.MinSize.X),
+        math.max(WindowInfo.Size.Y.Offset, Library.MinSize.Y)
     )
+
     if typeof(WindowInfo.Font) == "EnumItem" then
         WindowInfo.Font = Font.fromEnum(WindowInfo.Font)
     end
@@ -6370,13 +6373,29 @@ function Library:CreateWindow(WindowInfo)
         })
 
         if WindowInfo.Icon then
+            IconHolder = New("Frame", {
+                BackgroundColor3 = "AccentColor",
+                Size = WindowInfo.IconSize,
+                Parent = TitleHolder,
+            })
             WindowIcon = New("ImageLabel", {
                 Image = if tonumber(WindowInfo.Icon)
                     then string.format("rbxassetid://%d", WindowInfo.Icon)
                     else WindowInfo.Icon,
-                Size = WindowInfo.IconSize,
-                Parent = TitleHolder,
+                Size = UDim2.fromScale(1,1),
+                BackgroundTransparency = 1,
+                Parent = IconHolder,
             })
+            if WindowInfo.IconCorner then
+                New("UICorner", {
+                    CornerRadius = UDim.new(0, WindowInfo.IconCornerRadius - 2),
+                    Parent = IconHolder,
+                })
+                New("UICorner", {
+                    CornerRadius = UDim.new(0, WindowInfo.IconCornerRadius),
+                    Parent = WindowIcon,
+                })
+            end
         else
             WindowIcon = New("TextLabel", {
                 BackgroundTransparency = 1,
@@ -6413,7 +6432,7 @@ function Library:CreateWindow(WindowInfo)
 
         New("UIListLayout", {
             FillDirection = Enum.FillDirection.Horizontal,
-            HorizontalAlignment = Enum.HorizontalAlignment.Left,
+            HorizontalAlignment = Enum.HorizontalAlignment.Right,
             VerticalAlignment = Enum.VerticalAlignment.Center,
             Padding = UDim.new(0, 8),
             Parent = RightWrapper,
@@ -6912,86 +6931,87 @@ function Library:CreateWindow(WindowInfo)
         local WarningBoxHolder = New("Frame", {
             AutomaticSize = Enum.AutomaticSize.Y,
             BackgroundTransparency = 1,
-            Position = UDim2.fromOffset(0, 7),
-            Size = UDim2.fromScale(1, 0),
+            Position = UDim2.fromOffset(7, 7),
+            Size = UDim2.new(1, -14, 0, 0),
             Visible = false,
             Parent = TabContainer,
         })
 
         local WarningBox
-        local WarningBoxOutline
-        local WarningBoxShadowOutline
-        local WarningBoxScrollingFrame
-        local WarningTitle
-        local WarningStroke
-        local WarningText
+        local WarningBoxOutline  
+        local WarningBoxShadowOutline  
+        local WarningBoxScrollingFrame  
+        local WarningTitle  
+        local WarningStroke  
+        local WarningText  
         do
+            --//
             WarningBox = New("Frame", {
                 BackgroundColor3 = "BackgroundColor",
-                Position = UDim2.fromOffset(2, 0),
-                Size = UDim2.new(1, -5, 0, 0),
+                Position = UDim2.fromOffset(0,0),
+                Size = UDim2.new(1, 0, 0, 0),
                 Parent = WarningBoxHolder,
             })
-            table.insert(
-                Library.Corners,
-                New("UICorner", {
-                    CornerRadius = UDim.new(0, WindowInfo.CornerRadius),
-                    Parent = WarningBox,
-                })
-            )
-            WarningBoxOutline, WarningBoxShadowOutline = Library:AddOutline(WarningBox)
+            table.insert(  
+                Library.Corners,  
+                New("UICorner", {  
+                    CornerRadius = UDim.new(0, WindowInfo.CornerRadius),  
+                    Parent = WarningBox,  
+                })  
+            )  
+            WarningBoxOutline, WarningBoxShadowOutline = Library:AddOutline(WarningBox) 
 
-            WarningBoxScrollingFrame = New("ScrollingFrame", {
-                BackgroundTransparency = 1,
-                BorderSizePixel = 0,
-                Size = UDim2.fromScale(1, 1),
-                CanvasSize = UDim2.new(0, 0, 0, 0),
-                ScrollBarThickness = 3,
-                ScrollingDirection = Enum.ScrollingDirection.Y,
-                Parent = WarningBox,
-            })
-            New("UIPadding", {
-                PaddingBottom = UDim.new(0, 4),
-                PaddingLeft = UDim.new(0, 6),
-                PaddingRight = UDim.new(0, 6),
-                PaddingTop = UDim.new(0, 4),
-                Parent = WarningBoxScrollingFrame,
-            })
-
-            WarningTitle = New("TextLabel", {
-                BackgroundTransparency = 1,
-                Size = UDim2.new(1, -4, 0, 14),
-                Text = "",
-                TextColor3 = Color3.fromRGB(255, 50, 50),
-                TextSize = 14,
-                TextXAlignment = Enum.TextXAlignment.Left,
-                Parent = WarningBoxScrollingFrame,
-            })
-
-            WarningStroke = New("UIStroke", {
-                ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual,
-                Color = Color3.fromRGB(169, 0, 0),
-                LineJoinMode = Enum.LineJoinMode.Miter,
-                Parent = WarningTitle,
-            })
-
-            WarningText = New("TextLabel", {
-                BackgroundTransparency = 1,
-                Position = UDim2.fromOffset(0, 16),
-                Size = UDim2.new(1, -4, 0, 0),
-                Text = "",
-                TextSize = 14,
-                TextWrapped = true,
-                Parent = WarningBoxScrollingFrame,
-                TextXAlignment = Enum.TextXAlignment.Left,
-                TextYAlignment = Enum.TextYAlignment.Top,
-            })
-
-            New("UIStroke", {
-                ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual,
-                Color = "DarkColor",
-                LineJoinMode = Enum.LineJoinMode.Miter,
-                Parent = WarningText,
+            WarningBoxScrollingFrame = New("ScrollingFrame", {  
+                BackgroundTransparency = 1,  
+                BorderSizePixel = 0,  
+                Size = UDim2.fromScale(1, 1),  
+                CanvasSize = UDim2.new(0, 0, 0, 0),  
+                ScrollBarThickness = 3,  
+                ScrollingDirection = Enum.ScrollingDirection.Y,  
+                Parent = WarningBox,  
+            })  
+            New("UIPadding", {  
+                PaddingBottom = UDim.new(0, 4),  
+                PaddingLeft = UDim.new(0, 6),  
+                PaddingRight = UDim.new(0, 6),  
+                PaddingTop = UDim.new(0, 4),  
+                Parent = WarningBoxScrollingFrame,  
+            })  
+    
+            WarningTitle = New("TextLabel", {  
+                BackgroundTransparency = 1,  
+                Size = UDim2.new(1, -4, 0, 14),  
+                Text = "",  
+                TextColor3 = Color3.fromRGB(255, 50, 50),  
+                TextSize = 14,  
+                TextXAlignment = Enum.TextXAlignment.Left,  
+                Parent = WarningBoxScrollingFrame,  
+            })  
+    
+            WarningStroke = New("UIStroke", {  
+                ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual,  
+                Color = Color3.fromRGB(169, 0, 0),  
+                LineJoinMode = Enum.LineJoinMode.Miter,  
+                Parent = WarningTitle,  
+            })  
+    
+            WarningText = New("TextLabel", {  
+                BackgroundTransparency = 1,  
+                Position = UDim2.fromOffset(0, 16),  
+                Size = UDim2.new(1, -4, 0, 0),  
+                Text = "",  
+                TextSize = 14,  
+                TextWrapped = true,  
+                Parent = WarningBoxScrollingFrame,  
+                TextXAlignment = Enum.TextXAlignment.Left,  
+                TextYAlignment = Enum.TextYAlignment.Top,  
+            })  
+    
+            New("UIStroke", {  
+                ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual,  
+                Color = "DarkColor",  
+                LineJoinMode = Enum.LineJoinMode.Miter,  
+                Parent = WarningText,  
             })
         end
 
@@ -8469,23 +8489,40 @@ function Library:CreateWindow(WindowInfo)
     end
 
     if Library.IsMobile then
-        local ToggleButton = Library:AddDraggableButton("Toggle", function()
+        local ToggleButton = New("ImageButton", {
+            Image = if tonumber(WindowInfo.Icon)
+                    then string.format("rbxassetid://%d", WindowInfo.Icon)
+                    else WindowInfo.Icon,
+            BackgroundColor3 = "AccentColor",
+            Size = UDim2.fromOffset(46,46),
+            Position = UDim2.fromOffset(6,6),
+            Parent = ScreenGui,
+        })
+        New("UICorner", {
+            CornerRadius = UDim.new(0,8),
+            Parent = ToggleButton,
+        })
+        Library:MakeDraggable(ToggleButton, ToggleButton, true)
+        
+        ToggleButton.MouseButton1Click:Connect(function()
             Library:Toggle()
-        end, true)
+        end)
 
+        --[[
         local LockButton = Library:AddDraggableButton("Lock", function(self)
             Library.CantDragForced = not Library.CantDragForced
             self:SetText(Library.CantDragForced and "Unlock" or "Lock")
         end, true)
+        ]]--
 
         if WindowInfo.MobileButtonsSide == "Right" then
             ToggleButton.Button.Position = UDim2.new(1, -6, 0, 6)
             ToggleButton.Button.AnchorPoint = Vector2.new(1, 0)
 
-            LockButton.Button.Position = UDim2.new(1, -6, 0, 46)
-            LockButton.Button.AnchorPoint = Vector2.new(1, 0)
+            -- LockButton.Button.Position = UDim2.new(1, -6, 0, 46)
+            -- LockButton.Button.AnchorPoint = Vector2.new(1, 0)
         else
-            LockButton.Button.Position = UDim2.fromOffset(6, 46)
+            -- LockButton.Button.Position = UDim2.fromOffset(6, 46)
         end
     end
 
