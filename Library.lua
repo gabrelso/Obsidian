@@ -6388,12 +6388,8 @@ function Library:CreateWindow(WindowInfo)
             })
             if WindowInfo.IconCorner then
                 New("UICorner", {
-                    CornerRadius = UDim.new(0, WindowInfo.IconCornerRadius - 2),
-                    Parent = IconHolder,
-                })
-                New("UICorner", {
                     CornerRadius = UDim.new(0, WindowInfo.IconCornerRadius),
-                    Parent = WindowIcon,
+                    Parent = IconHolder,
                 })
             end
         else
