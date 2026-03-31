@@ -6391,6 +6391,10 @@ function Library:CreateWindow(WindowInfo)
                     CornerRadius = UDim.new(0, WindowInfo.IconCornerRadius),
                     Parent = IconHolder,
                 })
+                New("UICorner", {
+                    CornerRadius = UDim.new(0, WindowInfo.IconCornerRadius - 2),
+                    Parent = WindowIcon,
+                })
             end
         else
             WindowIcon = New("TextLabel", {
