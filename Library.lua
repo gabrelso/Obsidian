@@ -7311,8 +7311,7 @@ function Library:CreateWindow(WindowInfo)
                             Parent = TabboxHolder,
                         })
                     end
-                    -- vltt
-                    New("TextLabel", {
+                    local TabboxLabel = New("TextLabel", {
                         BackgroundTransparency = 1,
                         Position = UDim2.fromOffset(BoxIcon and 24 or 0, 0),
                         Size = UDim2.new(1, 0, 0, 34),
@@ -7320,6 +7319,11 @@ function Library:CreateWindow(WindowInfo)
                         TextSize = 15,
                         TextXAlignment = Enum.TextXAlignment.Left,
                         Parent = TabboxHolder,
+                    })
+                    New("UIPadding", {
+                        PaddingLeft = UDim.new(0, 12),
+                        PaddingRight = UDim.new(0, 12),
+                        Parent = TabboxLabel,
                     })
                 end
 
