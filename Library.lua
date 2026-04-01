@@ -7298,7 +7298,7 @@ function Library:CreateWindow(WindowInfo)
                 if Info.Title or Info.Name then
                     HeaderOffset = 35
                     Library:MakeLine(TabboxHolder, { Position = UDim2.fromOffset(0, 34), Size = UDim2.new(1, 0, 0, 1), ZIndex = 5 })
-                    
+        
                     local BoxIcon = Library:GetCustomIcon(Info.IconName)
                     if BoxIcon then
                         New("ImageLabel", {
@@ -7316,7 +7316,7 @@ function Library:CreateWindow(WindowInfo)
                         BackgroundTransparency = 1,
                         Position = UDim2.fromOffset(BoxIcon and 24 or 0, 0),
                         Size = UDim2.new(1, 0, 0, 34),
-                        Text = Info.Title or Info.Name,
+                        Text = Info.Name,
                         TextSize = 15,
                         TextXAlignment = Enum.TextXAlignment.Left,
                         Parent = TabboxHolder,
