@@ -7258,7 +7258,7 @@ function Library:CreateWindow(WindowInfo)
         function Tab:AddRightGroupbox(Name, IconName)
             return Tab:AddGroupbox({ Side = 2, Name = Name, IconName = IconName })
         end
-
+        --// marcar
         function Tab:AddTabbox(Info)
             local BoxHolder = New("Frame", {
                 AutomaticSize = Enum.AutomaticSize.Y,
@@ -7278,6 +7278,7 @@ function Library:CreateWindow(WindowInfo)
 
             local TabboxHolder
             local TabboxButtons
+            local HeaderOffset = 0
 
             do
                 TabboxHolder = New("Frame", {
@@ -7294,8 +7295,38 @@ function Library:CreateWindow(WindowInfo)
                 )
                 Library:AddOutline(TabboxHolder)
 
+                if Info.Title or Info.Name then
+                    HeaderOffset = 34
+                    Library:MakeLine(TabboxHolder, { Position = UDim2.fromOffset(0, 34), Size = UDim2.new(1, 0, 0, 1) })
+
+                    local BoxIcon = Library:GetCustomIcon(Info.IconName)
+                    if BoxIcon then
+                        New("ImageLabel", {
+                            Image = BoxIcon.Url,
+                            ImageColor3 = BoxIcon.Custom and "WhiteColor" or "AccentColor",
+                            ImageRectOffset = BoxIcon.ImageRectOffset,
+                            ImageRectSize = BoxIcon.ImageRectSize,
+                            Position = UDim2.fromOffset(8, 9),
+                            Size = UDim2.fromOffset(16, 16),
+                            Parent = TabboxHolder,
+                        })
+                    end
+
+                    New("TextLabel", {
+                        BackgroundTransparency = 1,
+                        Position = UDim2.fromOffset(BoxIcon and 32 or 8, 0),
+                        Size = UDim2.new(1, -16, 0, 34),
+                        Text = Info.Title or Info.Name,
+                        TextColor3 = "TextColor",
+                        TextSize = 14,
+                        TextXAlignment = Enum.TextXAlignment.Left,
+                        Parent = TabboxHolder,
+                    })
+                end
+
                 TabboxButtons = New("Frame", {
                     BackgroundTransparency = 1,
+                    Position = UDim2.fromOffset(0, HeaderOffset),
                     Size = UDim2.new(1, 0, 0, 34),
                     Parent = TabboxHolder,
                 })
@@ -7409,6 +7440,7 @@ function Library:CreateWindow(WindowInfo)
                     BackgroundTransparency = 1,
                     Size = UDim2.fromOffset(0, 16),
                     Text = Name,
+                    TextColor3 = "TextColor",
                     TextSize = 15,
                     TextTransparency = 0.5,
                     Parent = ButtonContent,
@@ -7422,8 +7454,8 @@ function Library:CreateWindow(WindowInfo)
 
                 local Container = New("Frame", {
                     BackgroundTransparency = 1,
-                    Position = UDim2.fromOffset(0, 35),
-                    Size = UDim2.new(1, 0, 1, -35),
+                    Position = UDim2.fromOffset(0, 35 + HeaderOffset),
+                    Size = UDim2.new(1, 0, 1, -(35 + HeaderOffset)),
                     Visible = false,
                     Parent = TabboxHolder,
                 })
@@ -7497,7 +7529,7 @@ function Library:CreateWindow(WindowInfo)
                         return
                     end
 
-                    TabboxHolder.Size = UDim2.new(1, 0, 0, (List.AbsoluteContentSize.Y / Library.DPIScale) + 49)
+                    TabboxHolder.Size = UDim2.new(1, 0, 0, (List.AbsoluteContentSize.Y / Library.DPIScale) + 49 + HeaderOffset)
                 end
 
                 function Tab:UpdateCorners()
