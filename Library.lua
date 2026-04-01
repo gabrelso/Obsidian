@@ -7297,7 +7297,7 @@ function Library:CreateWindow(WindowInfo)
 
                 if Info.Title or Info.Name then
                     HeaderOffset = 35
-                    Library:MakeLine(TabboxHolder, { Position = UDim2.fromOffset(0, 34), Size = UDim2.new(1, 0, 0, 1) })
+                    Library:MakeLine(TabboxHolder, { Position = UDim2.fromOffset(0, 34), Size = UDim2.new(1, 0, 0, 1), ZIndex = 5 })
 
                     local BoxIcon = Library:GetCustomIcon(Info.IconName)
                     if BoxIcon then
@@ -7450,6 +7450,7 @@ function Library:CreateWindow(WindowInfo)
                     AnchorPoint = Vector2.new(0, 1),
                     Position = UDim2.new(0, 0, 1, 1),
                     Size = UDim2.new(1, 0, 0, 1),
+                    ZIndex = 5,
                 })
 
                 local Container = New("Frame", {
