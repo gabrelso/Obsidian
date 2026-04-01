@@ -7296,7 +7296,7 @@ function Library:CreateWindow(WindowInfo)
                 Library:AddOutline(TabboxHolder)
 
                 if Info.Title or Info.Name then
-                    HeaderOffset = 34
+                    HeaderOffset = 35
                     Library:MakeLine(TabboxHolder, { Position = UDim2.fromOffset(0, 34), Size = UDim2.new(1, 0, 0, 1) })
 
                     local BoxIcon = Library:GetCustomIcon(Info.IconName)
