@@ -7371,13 +7371,13 @@ function Library:CreateWindow(WindowInfo)
                     Parent = TabboxButtons,
                 })
 
-                table.insert(
-                    Library.Corners,
-                    New("UICorner", {
-                        CornerRadius = UDim.new(0, WindowInfo.CornerRadius),
-                        Parent = Button,
-                    })
-                )
+                -- table.insert(
+                --    Library.Corners,
+                --    New("UICorner", {
+                --       CornerRadius = UDim.new(0, WindowInfo.CornerRadius),
+                --        Parent = Button,
+                --    })
+                -- )
 
                 local BottomCover = New("Frame", {
                     Name = "BottomCover",
