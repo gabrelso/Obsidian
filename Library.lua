@@ -13822,32 +13822,33 @@ function Library:CreateWindow(WindowInfo)
     end
 
     if Library.IsMobile then
-        local ToggleButton = Library:AddDraggableButton("Toggle", function()
-            Library:Toggle()
-        end, true, true)
+        local ToggleButton = New("ImageButton", {
+            Image = if tonumber(WindowInfo.Icon)
+                    then string.format("rbxassetid://%d", WindowInfo.Icon)
+                    else WindowInfo.Icon,
+            BackgroundColor3 = "AccentColor",
+            Size = UDim2.fromOffset(46, 46),
+            Position = UDim2.fromOffset(6, 6),
+            Parent = Floats,
+        })
+        New("UICorner", {
+            CornerRadius = UDim.new(0, 8),
+            Parent = ToggleButton,
+        })
+        Library:MakeDraggable(ToggleButton, ToggleButton, true)
 
-        local LockButton = Library:AddDraggableButton("Lock", function(self)
-            Library.CantDragForced = not Library.CantDragForced
-            self:SetText(Library.CantDragForced and "Unlock" or "Lock")
-        end, true, true)
+        if not table.find(Library.DraggableElements, ToggleButton) then
+            table.insert(Library.DraggableElements, ToggleButton)
+        end
+        PositionDraggable(ToggleButton, ToggleButton.Position)
+
+        ToggleButton.MouseButton1Click:Connect(function()
+            Library:Toggle()
+        end)
 
         if WindowInfo.MobileButtonsSide == "Right" then
-            ToggleButton.Button.AnchorPoint = Vector2.new(1, 0)
-            ToggleButton.Button.Position = UDim2.new(1, -6, 0, 6)
-
-            LockButton.Button.AnchorPoint = Vector2.new(1, 0)
-            LockButton.Button.Position = UDim2.new(1, -(ToggleButton.Button.Size.X.Offset + 12), 0, 6)
-        else
-            ToggleButton.Button.AnchorPoint = Vector2.new(0, 0)
-            ToggleButton.Button.Position = UDim2.fromOffset(6, 6)
-
-            LockButton.Button.AnchorPoint = Vector2.new(0, 0)
-            LockButton.Button.Position = UDim2.fromOffset(ToggleButton.Button.Size.X.Offset + 12, 6)
-        end
-
-        if WindowInfo.ShowMobileButtons == false then
-            ToggleButton.Button.Visible = false
-            LockButton.Button.Visible = false
+            ToggleButton.Position = UDim2.new(1, -6, 0, 6)
+            ToggleButton.AnchorPoint = Vector2.new(1, 0)
         end
     end
 
