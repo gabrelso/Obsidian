@@ -377,6 +377,8 @@ local Templates = {
         Position = UDim2.fromOffset(6, 6),
         Size = UDim2.fromOffset(720, 600),
         IconSize = UDim2.fromOffset(30, 30),
+        IconCorner = false,
+        IconCornerRadius = 8,
 
         AutoShow = true,
         Center = true,
@@ -10790,13 +10792,28 @@ function Library:CreateWindow(WindowInfo)
         })
 
         if WindowInfo.Icon then
-            local Icon = Library:GetCustomIcon(WindowInfo.Icon)
-            WindowIcon = New("ImageLabel", {
+            IconHolder = New("Frame", {
+                BackgroundColor3 = "AccentColor",
                 Size = WindowInfo.IconSize,
                 Parent = TitleHolder,
             })
-            if Icon then
-                Library:ApplyLucideIcon(WindowIcon, Icon)
+            WindowIcon = New("ImageLabel", {
+                Image = if tonumber(WindowInfo.Icon)
+                    then string.format("rbxassetid://%d", WindowInfo.Icon)
+                    else WindowInfo.Icon,
+                Size = UDim2.fromScale(1, 1),
+                BackgroundTransparency = 1,
+                Parent = IconHolder,
+            })
+            if WindowInfo.IconCorner then
+                New("UICorner", {
+                    CornerRadius = UDim.new(0, WindowInfo.IconCornerRadius),
+                    Parent = IconHolder,
+                })
+                New("UICorner", {
+                    CornerRadius = UDim.new(0, WindowInfo.IconCornerRadius - 1),
+                    Parent = WindowIcon,
+                })
             end
         else
             WindowIcon = New("TextLabel", {
